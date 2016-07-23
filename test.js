@@ -1,9 +1,24 @@
-const http = require('http');
+const http = require('http')
+const Writable = require('stream').Writable
 
-const server = http.createServer((req, res) => {
-    console.log("r")
-    req.pipe(process.stdout)
-    res.end("hello");
+var debug_writer = function(prefix){
+    return new Writable({
+        write(chunk, encoding, callback){
+            console.log(prefix, chunk)
+            callback()
+        }
+    })
+}
+
+
+var server = http.createServer((req, res) => {
+    req.pipe(debug_writer('[d1]'))
+    req.pipe(debug_writer('[d2]'))
+    req.on('end', ()=>
+           res.end("<form method='POST'>"+
+                   "<input id='i' name='n'></input>"+
+                   "<input type='submit'></input>"+
+                   "</form>"))
 });
 server.on('clientError', (err, socket) => {
     socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
