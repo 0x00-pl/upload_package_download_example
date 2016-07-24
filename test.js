@@ -12,8 +12,8 @@ var debug_writer = function(prefix){
 
 
 var server = http.createServer((req, res) => {
+    console.log(req.url, Object.keys(req))
     req.pipe(debug_writer('[d1]'))
-    req.pipe(debug_writer('[d2]'))
     req.on('end', ()=>
            res.end("<form method='POST'>"+
                    "<input id='i' name='n'></input>"+
