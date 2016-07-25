@@ -42,7 +42,7 @@ function upload_file(req, res){
 function index(){
     return '<html><head></head><body>'+
         '<form method="POST" enctype="multipart/form-data" action="/upload">'+
-//        '<input type="text" name="textfield"><br />'+
+        '<input type="text" name="textfield"><br />'+
         '<input type="file" name="filefield"><br />'+
         '<input type="submit">'+
         '</form>'+
