@@ -12,8 +12,5 @@
   "dependencies": {
     "busboy": "^0.2.13",
     "tmp": "0.0.28"
-  },
-  "devDependencies": {
-    "gulp-cli": "^1.2.2"
   }
 }
