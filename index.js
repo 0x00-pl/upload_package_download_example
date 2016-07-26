@@ -9,7 +9,11 @@ var http = require('http'),
 const redirect_url = '/'
 
 function make_cmd(src, dst, extra){
-    return ['mv', [src, dst]]
+    return ['.\\run_cmd.bat', [src, dst]]
+}
+
+function change_ext(filename){
+    return filename.substr(0, filename.length-4) + '.svmp.exe'
 }
 
 function upload_file(req, res){
@@ -18,10 +22,12 @@ function upload_file(req, res){
         res.end()
         return
     }
-    const tmp_src_path = tmp.tmpNameSync()
-    const tmp_dst_path = tmp.tmpNameSync()
+    const tmp_src_path = tmp.tmpNameSync({postfix:'.exe'})
+    const tmp_dst_path = change_ext(tmp_src_path)   // tmp.tmpNameSync()
+    var _filename
     var busboy = new Busboy({headers: req.headers})
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+        _filename = filename
         const tmp_upload = fs.createWriteStream(tmp_src_path)
         console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
         file.pipe(tmp_upload)
@@ -29,9 +35,10 @@ function upload_file(req, res){
     busboy.on('finish', function(){
         const [cmd, args] = make_cmd(tmp_src_path, tmp_dst_path)
         console.log('sec,dst', cmd, args)
-        var proc = spawn(cmd, args/*, {stdio: 'inherit'}*/)
+        var proc = spawn(cmd, args, {stdio: 'inherit'})
         proc.on('close', function(code){
             console.log('code:', code)
+            res.setHeader('Content-disposition', 'attachment; filename=' + change_ext(_filename))
             res.setHeader('Content-type', 'application/octet-stream')
             fs.createReadStream(tmp_dst_path).pipe(res)
         })
@@ -61,6 +68,7 @@ var server = http.createServer(function(req, res){
 
 
 server.listen(8888)
+console.log("server listen on 8888")
 
 
 
