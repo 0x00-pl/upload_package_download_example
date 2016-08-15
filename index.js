@@ -32,7 +32,12 @@ var escapeHTML = function(string) {
 
 
 function make_cmd(src, dst, extra){
-    return ['.\\run_cmd.bat', [src, dst]]
+    var ext = []
+    for(i in extra){
+        ext.append("-"+i)
+        ext.append(extra[i])
+    }
+    return ['SProtect', [src].concat(ext)]
 }
 
 function change_ext(filename){
@@ -60,7 +65,7 @@ function upload_file(req, res){
     var busboy = new Busboy({headers: req.headers})
     busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
         console.log('Field [' + fieldname + ']: value: ' + inspect(val));
-        _extra_args[fieldname] = inspect(val)
+        _extra_args[fieldname] = int(inspect(val))
     });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         _filename = filename
