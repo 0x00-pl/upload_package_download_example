@@ -34,8 +34,8 @@ var escapeHTML = function(string) {
 function make_cmd(src, dst, extra){
     var ext = []
     for(i in extra){
-        ext.append("-"+i)
-        ext.append(extra[i])
+        ext.concat("-"+i)
+        ext.concat(extra[i])
     }
     return ['SProtect', [src].concat(ext)]
 }
