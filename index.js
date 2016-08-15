@@ -17,11 +17,12 @@ var htmlEscapes = {
     '>': '&gt;',
     '"': '&quot;',
     "'": '&#x27;',
-    '/': '&#x2F;'
+    '/': '&#x2F;',
+    '\n': '<br>'
 };
 
 // Regex containing the keys listed immediately above.
-var htmlEscaper = /[&<>"'\/]/g;
+var htmlEscaper = /[&<>"'\/\n]/g;
 
 // Escape a string for HTML interpolation.
 var escapeHTML = function(string) {
