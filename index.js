@@ -64,13 +64,11 @@ function upload_file(req, res){
     var _extra_args = {}
     var busboy = new Busboy({headers: req.headers})
     busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
-        console.log('Field [' + fieldname + ']: value: ' + inspect(val));
         _extra_args[fieldname] = +(inspect(val))
     });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         _filename = filename
         const tmp_upload = fs.createWriteStream(tmp_src_path)
-        console.log('[debug] File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
         file.pipe(tmp_upload)
     })
     busboy.on('finish', function(){
