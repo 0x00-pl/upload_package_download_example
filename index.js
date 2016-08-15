@@ -64,8 +64,7 @@ function upload_file(req, res){
     var _extra_args = {}
     var busboy = new Busboy({headers: req.headers})
     busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
-        console.log('[debug]', val, typeof(val))
-        _extra_args[fieldname] = inspect(val)
+        _extra_args[fieldname] = +(val)
     });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         _filename = filename
