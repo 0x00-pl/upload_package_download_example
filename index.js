@@ -73,13 +73,12 @@ function upload_file(req, res){
         console.log('sec,dst', cmd, args)
         var proc = spawn(cmd, args, {stdio: 'inherit'})
         proc.on('close', function(code){
-            console.log('code:', code)
-            res.setHeader('Content-disposition', 'attachment; filename=' + change_ext(_filename))
-            res.setHeader('Content-type', 'application/octet-stream')
             fs.access(tmp_dst_path, fs.constants.R_OK, function(err){
                 if(err){
                     res.end(error_template(err, "", ""))
                 }else{
+                    res.setHeader('Content-disposition', 'attachment; filename=' + change_ext(_filename))
+                    res.setHeader('Content-type', 'application/octet-stream')
                     fs.createReadStream(tmp_dst_path).pipe(res)
                 }
             })
