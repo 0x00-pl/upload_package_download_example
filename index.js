@@ -76,7 +76,13 @@ function upload_file(req, res){
             console.log('code:', code)
             res.setHeader('Content-disposition', 'attachment; filename=' + change_ext(_filename))
             res.setHeader('Content-type', 'application/octet-stream')
-            fs.createReadStream(tmp_dst_path).pipe(res)
+            fs.access(tmp_dst_path, fs.constants.R_OK, function(err){
+                if(err){
+                    res.end(error_template(err, "", ""))
+                }else{
+                    fs.createReadStream(tmp_dst_path).pipe(res)
+                }
+            })
         })
         proc.on('error', function(err){
             res.end(error_template(err, "", ""))
