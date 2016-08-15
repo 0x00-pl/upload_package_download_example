@@ -46,9 +46,9 @@ function change_ext(filename){
 
 function error_template(err, stdout, stderr){
     return '<html><head></head><body>'+
-        'err: <div class="err">'+escapeHTML(err)+'</div>'+
-        'stdout: <div class="stdout">'+escapeHTML(stdout)+'</div>'+
-        'stderr: <div class="stderr">'+escapeHTML(stderr)+'</div>'+
+        '<h2>err:</h2><div class="err">'+escapeHTML(err)+'</div>'+
+        '<h2>stdout:</h2><div class="stdout">'+escapeHTML(stdout)+'</div>'+
+        '<h2>stderr:</h2><div class="stderr">'+escapeHTML(stderr)+'</div>'+
         '</body></html>'
 }
 
