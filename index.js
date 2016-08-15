@@ -46,9 +46,9 @@ function change_ext(filename){
 
 function error_template(err, stdout, stderr){
     return '<html><head></head><body>'+
-        '<div class="err">'+escapeHTML(err)+'</div>'+
-        '<div class="stdout">'+escapeHTML(stdout)+'</div>'+
-        '<div class="stderr">'+escapeHTML(stderr)+'</div>'+
+        'err: <div class="err">'+escapeHTML(err)+'</div>'+
+        'stdout: <div class="stdout">'+escapeHTML(stdout)+'</div>'+
+        'stderr: <div class="stderr">'+escapeHTML(stderr)+'</div>'+
         '</body></html>'
 }
 
@@ -62,6 +62,7 @@ function upload_file(req, res){
     const tmp_dst_path = change_ext(tmp_src_path)   // tmp.tmpNameSync()
     var _filename
     var _extra_args = {}
+
     var busboy = new Busboy({headers: req.headers})
     busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
         _extra_args[fieldname] = +(val)
@@ -74,11 +75,22 @@ function upload_file(req, res){
     busboy.on('finish', function(){
         const [cmd, args] = make_cmd(tmp_src_path, tmp_dst_path, _extra_args)
         console.log('sec,dst', cmd, args)
-        var proc = spawn(cmd, args, {stdio: 'inherit'})
+
+        var stdout_str = "",
+            stderr_str = ""
+
+        var proc = spawn(cmd, args)
+        proc.stdout.on('data', function(chunk){
+            stdout_str += chunk
+        })
+        proc.stderr.on('data', function(chunk){
+            stderr_str += chunk
+            console.log('[waring]:', chunk)
+        })
         proc.on('close', function(code){
             fs.access(tmp_dst_path, fs.constants.R_OK, function(err){
                 if(err){
-                    res.end(error_template(err, "", ""))
+                    res.end(error_template(err, stdout_str, stderr_str))
                 }else{
                     res.setHeader('Content-disposition', 'attachment; filename=' + change_ext(_filename))
                     res.setHeader('Content-type', 'application/octet-stream')
@@ -87,7 +99,7 @@ function upload_file(req, res){
             })
         })
         proc.on('error', function(err){
-            res.end(error_template(err, "", ""))
+            res.end(error_template(err, stdout_str, stderr_str))
         })
     })
     req.pipe(busboy)
