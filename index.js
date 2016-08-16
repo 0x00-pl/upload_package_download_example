@@ -109,15 +109,15 @@ function upload_file(req, res){
 function index(){
     return '<html><head></head><body>'+
         '<form method="POST" enctype="multipart/form-data" action="/upload">'+
-        '<input type="text" name="RI" value="256" /><br />'+
-        '<input type="text" name="NE" value="0" /><br />'+
-        '<input type="text" name="IE" value="1" /><br />'+
-        '<input type="text" name="ID" value="-1" /><br />'+
-        '<input type="text" name="GI" value="-1" /><br />'+
-        '<input type="text" name="CD" value="-1" /><br />'+
-        '<input type="text" name="BD" value="-1" /><br />'+
-        '<input type="text" name="VT" value="0" /><br />'+
-        '<input type="text" name="TC" value="45" /><br />'+
+        'RI: <input type="text" name="RI" value="256" /><br />'+
+        'NE: <input type="text" name="NE" value="0" /><br />'+
+        'IE: <input type="text" name="IE" value="1" /><br />'+
+        'ID: <input type="text" name="ID" value="-1" /><br />'+
+        'GI: <input type="text" name="GI" value="-1" /><br />'+
+        'CD: <input type="text" name="CD" value="-1" /><br />'+
+        'BD: <input type="text" name="BD" value="-1" /><br />'+
+        'VT: <input type="text" name="VT" value="0" /><br />'+
+        'TC: <input type="text" name="TC" value="45" /><br />'+
         '<input type="file" name="filefield"><br />'+
         '<input type="submit">'+
         '</form>'+
