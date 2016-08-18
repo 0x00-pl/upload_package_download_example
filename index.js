@@ -59,10 +59,8 @@ function upload_file(req, res){
         res.end()
         return
     }
-    const tmp_src_path = tmp.tmpNameSync({postfix:'.exe'})
-    const tmp_dst_path = change_ext(tmp_src_path)   // tmp.tmpNameSync()
-    var _filename
-    var _extra_args = {}
+    var tmp_src_path, tmp_dst_path
+    var _filename, _extra_args = {}
 
     var busboy = new Busboy({headers: req.headers})
     busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
@@ -70,6 +68,9 @@ function upload_file(req, res){
     });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         _filename = filename
+        const ext = path.extname(filename)
+        tmp_src_path = tmp.tmpNameSync({postfix:ext})
+        tmp_dst_path = change_ext(tmp_src_path)
         const tmp_upload = fs.createWriteStream(tmp_src_path)
         file.pipe(tmp_upload)
     })
@@ -107,7 +108,7 @@ function upload_file(req, res){
 }
 
 function index(){
-    return '<html><head></head><body>'+
+    return '<html><head></head><body><div class="main"'+
         '<form method="POST" enctype="multipart/form-data" action="/upload">'+
         'RI: <input type="text" name="RI" value="256" /><br />'+
         'NE: <input type="text" name="NE" value="0" /><br />'+
@@ -121,7 +122,7 @@ function index(){
         '<input type="file" name="filefield"><br />'+
         '<input type="submit">'+
         '</form>'+
-        '</body></html>'
+        '</div></body></html>'
 }
 
 
