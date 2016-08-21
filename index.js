@@ -107,22 +107,72 @@ function upload_file(req, res){
     req.pipe(busboy)
 }
 
+function tag(name, attribute, content){
+    return `<${name} ${attribute} >${content}</${name}>`
+}
+function div(class_name, content, attribute=""){
+    return tag('div', `class="${class_name}"`+attribute, content)
+}
+
+function style(style_obj){
+    var ret = ""
+    for(ek in style_obj){
+        var elements = ""
+        for(sk in style_obj[ek]){
+            elements += `${sk}: ${style_obj[ek][sk]};\n`
+        }
+        ret += ek+"{\n"+elements+"}\n\n"
+    }
+    return ret
+}
+
+function html_base(styles, content, scripts){
+    return [
+        "<html><head>",
+        "<style>", styles, "</style>",
+        "</head>",
+        "<body>",
+        '<div class="content">', content, '</div>',
+        scripts,
+        "</body></html>"
+    ].join("\n")
+}
+
 function index(){
-    return '<html><head></head><body><div class="main"'+
-        '<form method="POST" enctype="multipart/form-data" action="/upload">'+
-        'RI: <input type="text" name="RI" value="256" /><br />'+
-        'NE: <input type="text" name="NE" value="0" /><br />'+
-        'IE: <input type="text" name="IE" value="1" /><br />'+
-        'ID: <input type="text" name="ID" value="-1" /><br />'+
-        'GI: <input type="text" name="GI" value="-1" /><br />'+
-        'CD: <input type="text" name="CD" value="-1" /><br />'+
-        'BD: <input type="text" name="BD" value="-1" /><br />'+
-        'VT: <input type="text" name="VT" value="0" /><br />'+
-        'TC: <input type="text" name="TC" value="45" /><br />'+
-        '<input type="file" name="filefield"><br />'+
-        '<input type="submit">'+
-        '</form>'+
-        '</div></body></html>'
+    return html_base(
+        style({
+            'body': {
+                'background-color': '#227',
+            },
+            '.content': {
+                'max-width': '800px',
+                'margin': '5rem auto',
+                'padding': '2rem',
+                'background-color': '#222',
+                'color': 'lightcyan',
+            },
+            '.item-head': {
+                'display': 'inline-block',
+                'min-width': '10rem',
+            }
+        }),
+        [
+            '<form method="POST" enctype="multipart/form-data" action="/upload">',
+            div('list-item', div('item-head', 'RI:') + '<input type="text" name="RI" value="256" />'),
+            div('list-item', div('item-head', 'NE:') + '<input type="text" name="NE" value="0" />'),
+            div('list-item', div('item-head', 'IE:') + '<input type="text" name="IE" value="1" />'),
+            div('list-item', div('item-head', 'ID:') + '<input type="text" name="ID" value="-1" />'),
+            div('list-item', div('item-head', 'GI:') + '<input type="text" name="GI" value="-1" />'),
+            div('list-item', div('item-head', 'CD:') + '<input type="text" name="CD" value="-1" />'),
+            div('list-item', div('item-head', 'BD:') + '<input type="text" name="BD" value="-1" />'),
+            div('list-item', div('item-head', 'VT:') + '<input type="text" name="VT" value="0" />'),
+            div('list-item', div('item-head', 'TC:') + '<input type="text" name="TC" value="45" />'),
+            div('list-item', '<input type="file" name="filefield">'),
+            div('list-item', '<input type="submit"></input>'),
+            '</form>',
+        ].join("\n"),
+        ""
+    )
 }
 
 
